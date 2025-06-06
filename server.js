@@ -2,7 +2,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config(); // Lê variáveis do .env
 
 const app = express();
 app.use(cors());
@@ -10,12 +9,12 @@ app.use(cors());
 // Servir arquivos estáticos da pasta "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Conexão com o banco via variáveis de ambiente
+// Conexão com o banco
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASS || '123456',
-  database: process.env.DB_NAME || 'listadedoces'
+  host: 'localhost',
+  user: 'root',
+  password: '123456', // sua senha do MySQL
+  database: 'listadedoces'
 });
 
 // Verificar conexão
@@ -72,18 +71,18 @@ app.get('/produtos/:id', (req, res) => {
   });
 });
 
-// Rota principal
+// Rota padrão para carregar o index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Rota 404
+// Substituir quaisquer rotas desconhecidas por 404 ou redirecionamento opcional
 app.use((req, res) => {
   res.status(404).send('Página não encontrada');
 });
 
-// Porta do servidor (Railway define via variável)
-const PORT = process.env.PORT || 3000;
+// Iniciar servidor
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });
